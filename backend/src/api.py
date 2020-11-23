@@ -12,7 +12,7 @@ setup_db(app)
 CORS(app)
 
 '''
-https://ahemd.us.auth0.com/authorize?audience=coffee&response_type=token&client_id=CoUmz5x4TOR1FzVEWzP5lYbBFkpULawo&redirect_uri=http://127.0.0.1:5000
+https://ahemd.us.auth0.com/authorize?audience=coffee&response_type=token&client_id=CoUmz5x4TOR1FzVEWzP5lYbBFkpULawo&redirect_uri=http://localhost:4200/tabs/user-page
 '''
 
 db_drop_and_create_all()
@@ -22,12 +22,14 @@ db_drop_and_create_all()
 def after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
-    header['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, true'
-    header['Access-Control-Allow-Methods'] = 'POST,GET,PUT,DELETE,PATCH,OPTIONS'
+    header['Access-Control-Allow-Headers'] = 'Authorization,'+
+    ' Content-Type, true'
+    header['Access-Control-Allow-Methods'] = 'POST,GET,PUT,'
+    +'DELETE,PATCH,OPTIONS'
     return response
 
 
-## ROUTES
+# ROUTES
 
 
 @app.route("/drinks")
@@ -67,9 +69,9 @@ def post_drink(jwt):
         drink.insert()
     except:
         abort(500)
-    
+
     return jsonify({
-        "success": True, 
+        "success": True,
         "drinks": drink.long()
         }), 200
 
@@ -83,7 +85,7 @@ def modify_drink(jwt, id):
 
     if drink is None:
         abort(404)
-    
+
     try:
         if 'title' in request_data:
             drink.title = request_data['title']
@@ -92,7 +94,7 @@ def modify_drink(jwt, id):
         drink.update()
     except:
         abort(500)
-    
+
     return jsonify({
         'success': True,
         'drinks': [drink.long()]
@@ -111,60 +113,58 @@ def delete_drink(jwt, id):
         'deleted': id
     })
 
-## Error Handling
+# Error Handling
+
 
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
-                    "success": False, 
+                    "success": False,
                     "error": 422,
                     "message": "unprocessable"
                     }), 422
 
 
 @app.errorhandler(400)
-def unprocessable(error):
+def bad_request(error):
     return jsonify({
-                    "success": False, 
+                    "success": False,
                     "error": 400,
                     "message": "bad request"
                     }), 400
 
 
 @app.errorhandler(404)
-def unprocessable(error):
+def not_found(error):
     return jsonify({
-                    "success": False, 
+                    "success": False,
                     "error": 404,
                     "message": "resource not found"
                     }), 404
 
 
 @app.errorhandler(500)
-def unprocessable(error):
+def internal_server_error(error):
     return jsonify({
-                    "success": False, 
+                    "success": False,
                     "error": 500,
                     "message": "internal server error"
                     }), 500
 
 
 @app.errorhandler(403)
-def unprocessable(error):
+def forbiden(error):
     return jsonify({
-                    "success": False, 
+                    "success": False,
                     "error": 403,
                     "message": "forbidden"
                     }), 403
 
 
 @app.errorhandler(401)
-def unprocessable(error):
+def unauthorized(error):
     return jsonify({
-                    "success": False, 
+                    "success": False,
                     "error": 401,
                     "message": "unauthorized"
                     }), 401
-
-
-
