@@ -24,11 +24,12 @@ class AuthError(Exception):
 def get_token_auth_header():
     auth = request.headers.get('Authorization', None)
     if not auth:
+        abort(401)
         raise AuthError({
             'code': 'authorization_header_missing',
             'description': 'Authorization header is expected'
         }, 401)
-
+        
     parts = auth.split()
     if parts[0].lower() != 'bearer':
         raise AuthError({
@@ -57,7 +58,7 @@ def check_permissions(permission, payload):
         abort(400)
 
     if permission not in payload['permissions']:
-        abort(403)
+        abort(401)
 
     return True
 

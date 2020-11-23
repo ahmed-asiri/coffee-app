@@ -22,10 +22,8 @@ db_drop_and_create_all()
 def after_request(response):
     header = response.headers
     header['Access-Control-Allow-Origin'] = '*'
-    header['Access-Control-Allow-Headers'] = 'Authorization,'+
-    ' Content-Type, true'
-    header['Access-Control-Allow-Methods'] = 'POST,GET,PUT,'
-    +'DELETE,PATCH,OPTIONS'
+    header['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, true'
+    header['Access-Control-Allow-Methods'] = 'POST,GET,PUT,DELETE,PATCH,OPTIONS'
     return response
 
 
